@@ -12,13 +12,22 @@ public class TraverserBuilder {
         return createDefaultTraverser(path);
     }
 
-    private Traverser createJarTraverser(Path path) throws IOException{
+    public Traverser2 buildForFileItem(Path path) throws IOException {
+        DefaultTraverser traverser = (DefaultTraverser) build(path);
+        return wrap(traverser);
+    }
+
+    private Traverser2 wrap(DefaultTraverser traverser) {
+        return new DefaultTraverser2(traverser);
+    }
+
+    private DefaultTraverser createJarTraverser(Path path) throws IOException{
         FileSystem fs = FileSystems
                 .newFileSystem(path, getClass().getClassLoader());
         return new DefaultTraverser(fs, fs.getPath("/"), path);
     }
 
-    private Traverser createDefaultTraverser(Path path) throws IOException{
+    private DefaultTraverser createDefaultTraverser(Path path) throws IOException{
         FileSystem fs = FileSystems.getDefault();
         return new DefaultTraverser(fs, path, path);
     }
