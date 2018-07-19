@@ -12,6 +12,10 @@ public class TraverserBuilder {
         return createDefaultTraverser(path);
     }
 
+    public Traverser2 buildForFileItem(Path path) throws IOException {
+        
+    }
+
     private Traverser createJarTraverser(Path path) throws IOException{
         FileSystem fs = FileSystems
                 .newFileSystem(path, getClass().getClassLoader());

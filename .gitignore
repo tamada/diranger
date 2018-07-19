@@ -182,3 +182,12 @@ flycheck_*.el
 .dir-locals.el
 
 
+### https://raw.github.com/github/gitignore/967cd6479319efde70a6fa44fa1bfa02020f2357/Global/JEnv.gitignore
+
+# JEnv local Java version configuration file
+.java-version
+
+# Used by previous versions of JEnv
+.jenv-version
+
+
