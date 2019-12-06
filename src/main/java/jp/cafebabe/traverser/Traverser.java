@@ -13,22 +13,30 @@ public interface Traverser {
     Path basePath();
 
     default Stream<Path> stream(DirectoryStream.Filter<Path> streamFilter) throws IOException{
-        Filter filter = path -> streamFilter.accept(path);
-        return stream(filter);
+        return stream(map(streamFilter));
     }
 
     default Stream<Path> stream(java.io.FileFilter fileFilter) throws IOException{
-        Filter filter = path -> fileFilter.accept(path.toFile());
-        return stream(filter);
+        return stream(map(fileFilter));
     }
 
     default Stream<Path> stream(FileFilter fileFilter) throws IOException{
-        Filter filter = path -> fileFilter.accept(path.toFile());
-        return stream(filter);
+        return stream(map(fileFilter));
     }
 
     default Stream<Path> stream() throws IOException{
-        Filter filter = path -> true;
-        return stream(filter);
+        return stream((Filter)(path -> true));
+    }
+
+    static Filter map(java.io.FileFilter filter) {
+        return path -> filter.accept(path.toFile());
+    }
+
+    static Filter map(javax.swing.filechooser.FileFilter filter) {
+        return path -> filter.accept(path.toFile());
+    }
+
+    static Filter map(DirectoryStream.Filter<Path> filter) {
+        return path -> filter.accept(path);
     }
 }
