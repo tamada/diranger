@@ -1,4 +1,4 @@
-package com.github.traverser;
+package jp.cafebabe.traverser;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;

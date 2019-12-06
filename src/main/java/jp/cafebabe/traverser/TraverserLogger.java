@@ -1,4 +1,4 @@
-package com.github.traverser;
+package jp.cafebabe.traverser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

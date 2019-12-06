@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.com/tamada/traverser.svg?branch=master)](https://travis-ci.com/tamada/traverser)
+[![codebeat badge](https://codebeat.co/badges/acff03d1-1e97-4cae-8734-63070a268590)](https://codebeat.co/projects/github-com-tamada-traverser-master)
+[![Coverage Status](https://coveralls.io/repos/github/tamada/traverser/badge.svg?branch=master)](https://coveralls.io/github/tamada/traverser?branch=master)
+[![Maven Repository](https://img.shields.io/badge/maven.pkg.github.com/tamada-1.0.0-green)](https://maven.pkg.github.com/tamada/)
+[![License](https://img.shields.io/badge/License-WTFPL-blue.svg?style=flat)](https://github.com/tamada/traverser/blob/master/LICENSE)
+
 # Traverser
 
 After released Java SE 8, stream API becomes general in the programming.
