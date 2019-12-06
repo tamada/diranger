@@ -1,4 +1,4 @@
-package com.github.traverser;
+package jp.cafebabe.traverser;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -9,7 +9,7 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class DefaultTraverser extends AbstractTraverser{
+class DefaultTraverser extends AbstractTraverser{
     private FileSystemProvider provider;
     private Path entryPoint;
 
@@ -17,6 +17,10 @@ public class DefaultTraverser extends AbstractTraverser{
         super(basePath);
         this.provider = system.provider();
         this.entryPoint = entryPoint;
+    }
+
+    public BasicFileAttributes attributes(Path path) throws IOException {
+        return provider.readAttributes(path, BasicFileAttributes.class);
     }
 
     @Override
@@ -46,8 +50,6 @@ public class DefaultTraverser extends AbstractTraverser{
     }
 
     private boolean isDirectory(Path path) throws IOException{
-        BasicFileAttributes attributes = provider
-                .readAttributes(path, BasicFileAttributes.class);
-        return attributes.isDirectory();
+        return attributes(path).isDirectory();
     }
 }
