@@ -38,12 +38,13 @@
     <system>Github issues</system>
   </issueManagement>
 
-  <repositories>
+  <distributionManagement>
     <repository>
-      <id>github.tamada</id>
-      <url>https://maven.pkg.github.com/tamada</url>
+      <id>github</id>
+      <name>GitHub tamada Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/tamada/maven</url>
     </repository>
-  </repositories>
+  </distributionManagement>
 
   <scm>
     <connection>scm:git:https://github.com/tamada/traverser.git</connection>
