@@ -1,16 +1,13 @@
 package jp.cafebabe.dwalker;
 
-import com.github.traverser.DefaultTraverser;
-import com.github.traverser.Traverser;
-
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class WalkerBuilder {
-    private Path basePath;
-    private Config.Builder builder = new Config.Builder();
+    private final Path basePath;
+    private final Config.Builder builder = new Config.Builder();
 
     public WalkerBuilder(Path basePath) {
         this.basePath = basePath;
@@ -20,29 +17,38 @@ public class WalkerBuilder {
         builder.skipHiddenFiles(flag);
     }
 
-    public void followSymlinks(boolean flag) {
-        builder.followSymlinks(flag);
+    public void skipSymlinks(boolean flag) {
+        builder.skipSymlinks(flag);
     }
 
     public void respectIgnore(boolean flag) {
         builder.respectIgnoreFiles(flag);
     }
 
-    public Walker build() throws IOException {
-        if(isJarOrZipFile(basePath))
-            return createJarWalker(basePath);
-        return createDefaultWalker(basePath);
+    public Walker build() {
+        try {
+            return buildImpl(builder.build());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    private Traverser createJarTraverser(Path path) throws IOException {
+    private Walker buildImpl(Config config) throws IOException {
+        if(isJarOrZipFile(basePath))
+            return createJarWalker(basePath, config);
+        return createDefaultWalker(basePath, config);
+    }
+
+    private Walker createJarWalker(Path path, Config config) throws IOException {
         FileSystem fs = FileSystems
                 .newFileSystem(path, getClass().getClassLoader());
-        return new DefaultWalker(fs, fs.getPath("/"), path, builder.build());
+        return new DefaultWalker(fs, fs.getPath("/"), config);
     }
 
-    private Traverser createDefaultTraverser(Path path) throws IOException{
+    private Walker createDefaultWalker(Path path, Config config) throws IOException{
         FileSystem fs = FileSystems.getDefault();
-        return new DefaultWalker(fs, path, path, builder.build());
+        return new DefaultWalker(fs, path, config);
     }
 
     private boolean isJarOrZipFile(Path path){

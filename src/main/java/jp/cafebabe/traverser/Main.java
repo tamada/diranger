@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class Main {
-    private Traverser traverser;
+    private final Traverser traverser;
 
     public Main(String[] args) throws IOException{
         Path path = Paths.get(args[0]);

@@ -2,6 +2,7 @@ package jp.cafebabe.dwalker;
 
 import com.github.traverser.Filter;
 import com.github.traverser.TraverserLogger;
+import jp.cafebabe.dwalker.ignorefiles.IgnoreManager;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -9,20 +10,61 @@ import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class DefaultWalker implements Walker {
-    private Path basePath;
-    private FileSystemProvider provider;
-    private FileSystem system;
+    private final Path basePath;
+    private final Config config;
+    private final FileSystemProvider provider;
+    private final FileSystem system;
 
-    public Iterator<Path> iterator() {
+    public DefaultWalker(FileSystem fs, Path base, Config config) {
+        this.basePath = base;
+        this.system = fs;
+        this.provider = fs.provider();
+        this.config = config;
     }
 
+    public Iterator<Path> iterator() {
+        List<Entry> list = new ArrayList<>();
+        IgnoreManager manager = IgnoreManager.of(config.respectIgnoreFiles(), provider);
+        traverse(basePath, list, manager);
+        return list.stream().map(Entry::path).iterator();
+    }
     public Stream<Path> stream() {
-        DirectoryStream<Path> stream = provider.newDirectoryStream()
+        var spliterator = Spliterators.spliteratorUnknownSize(iterator(), 0);
+        return StreamSupport.stream(spliterator, false);
+    }
+
+    private void traverse(Path base, List<Entry> list, IgnoreManager manager) {
+        try {
+            traverseImpl(base, list, manager);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void traverseImpl(Path base, List<Entry> list, IgnoreManager manager) throws IOException {
+        traverseImpl(new Entry(base, provider), list, manager);
+    }
+
+    private void traverseImpl(Entry entry, List<Entry> list, IgnoreManager manager) throws IOException {
+        if(!config.isTarget(entry))
+            return;
+        if(!entry.isDirectory()) {
+            if (!manager.isIgnore(entry.path()))
+                list.add(entry);
+            return;
+        } // else directory
+        var newManager = manager.visitDirectory(entry.path());
+        for(Iterator<Entry> i = config.iterator(entry.path(), provider); i.hasNext(); ){
+            traverseImpl(i.next(), list, newManager);
+        }
     }
 
     private Stream<Path> traversePath(Path path, Filter filter){

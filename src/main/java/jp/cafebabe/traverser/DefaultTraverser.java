@@ -9,9 +9,9 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-class DefaultTraverser extends AbstractTraverser{
-    private FileSystemProvider provider;
-    private Path entryPoint;
+public class DefaultTraverser extends AbstractTraverser{
+    private final FileSystemProvider provider;
+    private final Path entryPoint;
 
     DefaultTraverser(FileSystem system, Path entryPoint, Path basePath){
         super(basePath);

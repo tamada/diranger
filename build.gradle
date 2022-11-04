@@ -8,12 +8,26 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 dependencies {
-    compile 'org.apache.commons:commons-compress:1.13'
-    testCompile 'junit:junit:4.12'
+    implementation 'org.apache.commons:commons-compress:1.13'
+    implementation 'com.github.arturopala:gitignore_3:0.2.0'
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.1'
 }
 
 jar{
     manifest{
-        attributes 'Main-Class': 'com.github.traverser.Main'
+        attributes (
+                'Main-Class': 'jp.cafebabe.dwalker.Main',
+                'Class-Path': configurations.compileClasspath.files.collect { it.getName() }.join(' ')
+        )
     }
 }
+
+task copyFile(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from configurations.compileClasspath
+    into "$buildDir/libs"
+}
+
+build.finalizedBy copyFile

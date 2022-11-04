@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public abstract class AbstractTraverser implements Traverser{
-    private Path basePath;
+    private final Path basePath;
 
     public AbstractTraverser(Path basePath){
         this.basePath = basePath;
