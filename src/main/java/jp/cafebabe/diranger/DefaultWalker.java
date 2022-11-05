@@ -1,8 +1,8 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
 import com.github.traverser.Filter;
 import com.github.traverser.TraverserLogger;
-import jp.cafebabe.dwalker.ignorefiles.IgnoreManager;
+import jp.cafebabe.diranger.ignorefiles.IgnoreManager;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -21,13 +21,13 @@ public class DefaultWalker implements Walker {
     private final Path basePath;
     private final Config config;
     private final FileSystemProvider provider;
-    private final FileSystem system;
+    private final DirectoryStream.Filter<Path> filter;
 
     public DefaultWalker(FileSystem fs, Path base, Config config) {
         this.basePath = base;
-        this.system = fs;
         this.provider = fs.provider();
         this.config = config;
+        this.filter = new WalkerFilter(config, provider);
     }
 
     public Iterator<Path> iterator() {
@@ -49,6 +49,14 @@ public class DefaultWalker implements Walker {
         }
     }
 
+    private void traverse(Entry base, List<Entry> list, IgnoreManager manager) {
+        try {
+            traverseImpl(base, list, manager);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void traverseImpl(Path base, List<Entry> list, IgnoreManager manager) throws IOException {
         traverseImpl(new Entry(base, provider), list, manager);
     }
@@ -57,13 +65,15 @@ public class DefaultWalker implements Walker {
         if(!config.isTarget(entry))
             return;
         if(!entry.isDirectory()) {
-            if (!manager.isIgnore(entry.path()))
+            if (!manager.isIgnore(entry))
                 list.add(entry);
             return;
         } // else directory
-        var newManager = manager.visitDirectory(entry.path());
-        for(Iterator<Entry> i = config.iterator(entry.path(), provider); i.hasNext(); ){
-            traverseImpl(i.next(), list, newManager);
+        if(!manager.isIgnore(entry)) {
+            var newManager = manager.visitDirectory(entry);
+            entry.list(config)
+                    .filter(e -> newManager.isIgnore(e))
+                    .forEach(e -> traverse(e, list, newManager));
         }
     }
 

@@ -1,15 +1,20 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class WalkerBuilder {
     private final Path basePath;
     private final Config.Builder builder = new Config.Builder();
 
     public WalkerBuilder(Path basePath) {
+        if(Objects.equals(basePath.toString(), "."))
+            basePath = Path.of("").toAbsolutePath();
+        if(Objects.equals(basePath.toString(), ".."))
+            basePath = Path.of("").toAbsolutePath().getParent();
         this.basePath = basePath;
     }
 

@@ -1,13 +1,14 @@
-package jp.cafebabe.dwalker.ignorefiles;
+package jp.cafebabe.diranger.ignorefiles;
+
+import jp.cafebabe.diranger.Entry;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public interface IgnoreManager extends IgnoreFile {
     static IgnoreManager of(boolean respectIgnore, FileSystemProvider provider) {
-        if(respectIgnore)
+        if(!respectIgnore)
             return new Null();
         return new Default(new IgnoreFilesBuilder(provider));
     }
@@ -18,7 +19,7 @@ public interface IgnoreManager extends IgnoreFile {
      * @param path a directory
      * @return an instance of IgnoreManager for the directory.
      */
-    IgnoreManager visitDirectory(Path path) throws IOException;
+    IgnoreManager visitDirectory(Entry path) throws IOException;
 
     final class Default implements IgnoreManager {
         private IgnoreManager parent;
@@ -36,15 +37,17 @@ public interface IgnoreManager extends IgnoreFile {
         }
 
         @Override
-        public IgnoreManager visitDirectory(Path path) throws IOException {
-            var ifs = builder.build(path);
-            if(ifs == null)
+        public IgnoreManager visitDirectory(Entry path) throws IOException {
+            System.out.printf("visitDirectory(%s)%n", path);
+            var ifs = builder.build(path)
+                    .collect(Collectors.toList());
+            if(ifs.size() == 0)
                 return this;
-            return new Default(this, ifs, builder);
+            return new Default(this, new IgnoreFiles(ifs.stream()), builder);
         }
 
         @Override
-        public boolean isIgnore(Path path) {
+        public boolean isIgnore(Entry path) {
             boolean result = current != null && current.isIgnore(path);
             if(!result && parent != null)
                 return parent.isIgnore(path);
@@ -54,12 +57,12 @@ public interface IgnoreManager extends IgnoreFile {
 
     final class Null implements IgnoreManager {
         @Override
-        public boolean isIgnore(Path path) {
+        public boolean isIgnore(Entry path) {
             return false;
         }
 
         @Override
-        public IgnoreManager visitDirectory(Path path) {
+        public IgnoreManager visitDirectory(Entry path) {
             return this;
         }
     }

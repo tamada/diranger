@@ -1,4 +1,4 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
 import java.nio.file.Path;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ public class Main {
     private void listUp(String base) {
         var walker = new WalkerBuilder(Path.of(base)).build();
         System.out.printf("%s%n", base);
-        walker.stream().forEach(p -> System.out.printf("\t%s%n", p));
+        walker.stream().forEach(p -> System.out.printf("    %s%n", p));
     }
 
     public static void main(String[] args) throws IOException {

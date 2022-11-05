@@ -1,16 +1,17 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.BitSet;
 import java.util.Iterator;
 
 public class Config {
     private static final int RESPECT_IGNORE_FILES = 1;
-    private static final int SKIP_HIDDEN_FILES = 1;
-    private static final int SKIP_SYMLINKS = 1;
+    private static final int SKIP_HIDDEN_FILES = 2;
+    private static final int SKIP_SYMLINKS = 3;
 
     private final BitSet bits = new BitSet();
 
@@ -22,6 +23,8 @@ public class Config {
     }
 
     public boolean isTarget(Entry entry) {
+        if(!entry.exists())
+            return false;
         if(skipHiddenFiles() && entry.isHidden())
             return false;
         return !skipSymlinks() || !entry.isSymlink();
@@ -46,16 +49,6 @@ public class Config {
         return bits.get(SKIP_HIDDEN_FILES);
     }
 
-    public Iterator<Entry> iterator(Entry entry) throws IOException {
-        var ds = entry.newDirectoryStream(this);
-        return new EntryIterator(ds.iterator(), entry.provider());
-    }
-
-    public Iterator<Entry> iterator(Path base, FileSystemProvider provider) throws IOException {
-        var ds = provider.newDirectoryStream(base, buildFilter(provider));
-        return new EntryIterator(ds.iterator(), provider);
-    }
-
     public DirectoryStream.Filter<Path> buildFilter(FileSystemProvider provider) {
         return new WalkerFilter(this, provider);
     }
@@ -65,16 +58,19 @@ public class Config {
         private boolean symlink = true;
         private boolean hidden = true;
 
-        public void skipSymlinks(boolean flag) {
+        public Builder skipSymlinks(boolean flag) {
             this.symlink = flag;
+            return this;
         }
 
-        public void respectIgnoreFiles(boolean flag) {
+        public Builder respectIgnoreFiles(boolean flag) {
             this.respect = flag;
+            return this;
         }
 
-        public void skipHiddenFiles(boolean flag) {
+        public Builder skipHiddenFiles(boolean flag) {
             this.hidden = flag;
+            return this;
         }
 
         public Config build() {

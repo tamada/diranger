@@ -1,6 +1,7 @@
-package jp.cafebabe.dwalker.ignorefiles;
+package jp.cafebabe.diranger.ignorefiles;
 
-import java.nio.file.Path;
+import jp.cafebabe.diranger.Entry;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +14,7 @@ public class IgnoreFiles implements IgnoreFile {
     }
 
     @Override
-    public boolean isIgnore(Path path) {
+    public boolean isIgnore(Entry path) {
         return files.stream()
                 .anyMatch(ignore -> ignore.isIgnore(path));
     }

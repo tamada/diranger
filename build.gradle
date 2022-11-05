@@ -1,24 +1,61 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'jacoco-report-aggregation'
+}
+
+group = 'jp.cafebabe.diranger'
+version = '1.0.0-beta-1'
 
 repositories {
     jcenter()
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+compileJava {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+    options.compilerArgs += [
+            "-Xlint:unchecked",
+            "-Aproject=${project.name}",
+            "-Aother.resource.patterns=.*.json"
+    ]
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
 
 dependencies {
-    implementation 'org.apache.commons:commons-compress:1.13'
-    implementation 'com.github.arturopala:gitignore_3:0.2.0'
+    // This product contains the part of jgit (about gitignore)
+    // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+    // implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.3.0.202209071007-r'
+
+    // https://mvnrepository.com/artifact/io.vavr/vavr
+    implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.3'
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.9.1'
+}
+
+reporting {
+    reports {
+        testCodeCoverageReport(JacocoCoverageReport) {
+            testType = TestSuiteType.UNIT_TEST
+        }
+    }
 }
 
 jar{
     manifest{
         attributes (
-                'Main-Class': 'jp.cafebabe.dwalker.Main',
+                'Main-Class': 'jp.cafebabe.diranger.Main',
                 'Class-Path': configurations.compileClasspath.files.collect { it.getName() }.join(' ')
         )
     }

@@ -1,6 +1,5 @@
-package jp.cafebabe.dwalker;
+package jp.cafebabe.diranger;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Iterator;
