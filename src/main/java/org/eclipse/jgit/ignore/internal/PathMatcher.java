@@ -186,11 +186,8 @@ public class PathMatcher extends AbstractMatcher {
 		if (pathMatch) {
 			return path.equals(prefix) && (!dirOnly || assumeDirectory);
 		}
-		if (path.startsWith(prefix)) {
-			return true;
-		}
-		return false;
-	}
+        return path.startsWith(prefix);
+    }
 
 	/** {@inheritDoc} */
 	@Override

@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EntryTest {
     @Test
     public void testListDefault() throws IOException {
-        Config config = new Config.Builder()
+        Config config = new Config.Builder().respectIgnoreFiles(false)
                 .build();
-        Entry entry = new Entry(Path.of("src/test/resources/samples"));
+        Entry entry = Entry.of(Path.of("src/test/resources/samples"));
         var list = entry.list(config).sorted().collect(Collectors.toList());
-        assertEquals(list.size(), 6);
+        assertEquals(6, list.size());
         assertEquals(list.get(0).toString(), "src/test/resources/samples/dir1");
         assertEquals(list.get(1).toString(), "src/test/resources/samples/dir2");
         assertEquals(list.get(2).toString(), "src/test/resources/samples/dir3");
@@ -30,19 +30,20 @@ public class EntryTest {
                 .skipHiddenFiles(false)
                 .respectIgnoreFiles(false)
                 .build();
-        Entry entry = new Entry(Path.of("src/test/resources/samples"));
+        Entry entry = Entry.of(Path.of("src/test/resources/samples"));
         var list = entry.list(config).sorted().collect(Collectors.toList());
-        assertEquals(list.size(), 10);
-        assertEquals(list.get(0).toString(), "src/test/resources/samples/.hidden_dir1");
-        assertEquals(list.get(1).toString(), "src/test/resources/samples/.hidden_file1");
-        assertEquals(list.get(2).toString(), "src/test/resources/samples/.hidden_symlink1");
-        assertEquals(list.get(3).toString(), "src/test/resources/samples/dir1");
-        assertEquals(list.get(4).toString(), "src/test/resources/samples/dir2");
-        assertEquals(list.get(5).toString(), "src/test/resources/samples/dir3");
-        assertEquals(list.get(6).toString(), "src/test/resources/samples/file1");
-        assertEquals(list.get(7).toString(), "src/test/resources/samples/file2");
-        assertEquals(list.get(8).toString(), "src/test/resources/samples/file3");
-        assertEquals(list.get(9).toString(), "src/test/resources/samples/symlink1");
+        assertEquals(11, list.size());
+        assertEquals(list.get(0).toString(), "src/test/resources/samples/.gitignore");
+        assertEquals(list.get(1).toString(), "src/test/resources/samples/.hidden_dir1");
+        assertEquals(list.get(2).toString(), "src/test/resources/samples/.hidden_file1");
+        assertEquals(list.get(3).toString(), "src/test/resources/samples/.hidden_symlink1");
+        assertEquals(list.get(4).toString(), "src/test/resources/samples/dir1");
+        assertEquals(list.get(5).toString(), "src/test/resources/samples/dir2");
+        assertEquals(list.get(6).toString(), "src/test/resources/samples/dir3");
+        assertEquals(list.get(7).toString(), "src/test/resources/samples/file1");
+        assertEquals(list.get(8).toString(), "src/test/resources/samples/file2");
+        assertEquals(list.get(9).toString(), "src/test/resources/samples/file3");
+        assertEquals(list.get(10).toString(), "src/test/resources/samples/symlink1");
     }
 
     @Test
@@ -51,17 +52,18 @@ public class EntryTest {
                 .skipHiddenFiles(false)
                 .respectIgnoreFiles(false)
                 .build();
-        Entry entry = new Entry(Path.of("src/test/resources/samples"));
+        Entry entry = Entry.of(Path.of("src/test/resources/samples"));
         var list = entry.list(config).sorted().collect(Collectors.toList());
-        assertEquals(list.size(), 8);
-        assertEquals(list.get(0).toString(), "src/test/resources/samples/.hidden_dir1");
-        assertEquals(list.get(1).toString(), "src/test/resources/samples/.hidden_file1");
-        assertEquals(list.get(2).toString(), "src/test/resources/samples/dir1");
-        assertEquals(list.get(3).toString(), "src/test/resources/samples/dir2");
-        assertEquals(list.get(4).toString(), "src/test/resources/samples/dir3");
-        assertEquals(list.get(5).toString(), "src/test/resources/samples/file1");
-        assertEquals(list.get(6).toString(), "src/test/resources/samples/file2");
-        assertEquals(list.get(7).toString(), "src/test/resources/samples/file3");
+        assertEquals(9, list.size());
+        assertEquals(list.get(0).toString(), "src/test/resources/samples/.gitignore");
+        assertEquals(list.get(1).toString(), "src/test/resources/samples/.hidden_dir1");
+        assertEquals(list.get(2).toString(), "src/test/resources/samples/.hidden_file1");
+        assertEquals(list.get(3).toString(), "src/test/resources/samples/dir1");
+        assertEquals(list.get(4).toString(), "src/test/resources/samples/dir2");
+        assertEquals(list.get(5).toString(), "src/test/resources/samples/dir3");
+        assertEquals(list.get(6).toString(), "src/test/resources/samples/file1");
+        assertEquals(list.get(7).toString(), "src/test/resources/samples/file2");
+        assertEquals(list.get(8).toString(), "src/test/resources/samples/file3");
     }
 
     @Test
@@ -70,9 +72,9 @@ public class EntryTest {
                 .skipHiddenFiles(true)
                 .respectIgnoreFiles(false)
                 .build();
-        Entry entry = new Entry(Path.of("src/test/resources/samples"));
+        Entry entry = Entry.of(Path.of("src/test/resources/samples"));
         var list = entry.list(config).sorted().collect(Collectors.toList());
-        assertEquals(list.size(), 7);
+        assertEquals(7, list.size());
         assertEquals(list.get(0).toString(), "src/test/resources/samples/dir1");
         assertEquals(list.get(1).toString(), "src/test/resources/samples/dir2");
         assertEquals(list.get(2).toString(), "src/test/resources/samples/dir3");

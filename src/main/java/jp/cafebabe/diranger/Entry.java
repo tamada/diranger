@@ -1,11 +1,10 @@
 package jp.cafebabe.diranger;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.Comparator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -13,26 +12,11 @@ public class Entry implements Comparable<Entry> {
     private final Path path;
     private final BasicFileAttributes attributes;
     private final FileSystemProvider provider;
-    private boolean exist = true;
 
-    public Entry(Path path, BasicFileAttributes attributes, FileSystemProvider provider) {
-        this.path = path;
-        this.provider = provider;
-        this.attributes = attributes == null? findAttributes(): attributes;
-    }
-
-    public Entry(Path path, FileSystemProvider provider) {
+    private Entry(Path path, FileSystemProvider provider) {
         this.path = path;
         this.provider = provider;
         this.attributes = findAttributes();
-    }
-
-    public Entry(Path path) {
-        this(path, path.getFileSystem().provider());
-    }
-
-    public boolean exists() {
-        return exist;
     }
 
     public boolean isDirectory() {
@@ -58,7 +42,15 @@ public class Entry implements Comparable<Entry> {
     public Stream<Entry> list(Config config) throws IOException {
         var ds = provider.newDirectoryStream(path(), config.buildFilter(provider));
         return StreamSupport.stream(ds.spliterator(), false)
+                .sorted()
                 .map(p -> new Entry(p, provider));
+    }
+
+    public Entry parent() {
+        Path parent = path().getParent();
+        if(parent == null)
+            return null;
+        return Entry.of(parent, provider);
     }
 
     public Path path() {
@@ -85,11 +77,41 @@ public class Entry implements Comparable<Entry> {
 
     private BasicFileAttributes findAttributes() {
         try {
-            return provider.readAttributes(path, BasicFileAttributes.class);
+            return provider.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
         } catch(IOException e) {
-            exist = false;
         }
         return null;
     }
 
+    public boolean isSame(Path path) {
+        try {
+            return provider().isSameFile(path(), path);
+        } catch(IOException e) {
+            return false;
+        }
+    }
+
+    public Path relativize(Entry path) {
+        return path().relativize(path.path());
+    }
+
+    public Entry resolve(String path) {
+        return resolve(Path.of(path));
+    }
+
+    public Entry resolve(Path sub) {
+        return Entry.of(path().resolve(sub), provider());
+    }
+
+    public static Entry of(String path) {
+        return of(Path.of(path));
+    }
+
+    public static Entry of(Path path) {
+        return new Entry(path, path.getFileSystem().provider());
+    }
+
+    public static Entry of(Path path, FileSystemProvider provider) {
+        return new Entry(path, provider);
+    }
 }

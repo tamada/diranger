@@ -7,6 +7,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 
 public class FS {
+    public static boolean exists(Entry entry, LinkOption... options) {
+        return exists(entry.path(), entry.provider(), options);
+    }
+
+    /**
+     * The routine of this method is copied from java.nio.file.Files.
+     */
     public static boolean exists(Path path, FileSystemProvider provider, LinkOption... options) {
         try {
             if (followLinks(options)) {
@@ -24,6 +31,9 @@ public class FS {
         }
     }
 
+    /**
+     * The routine of this method is copied from java.nio.file.Files.
+     */
     private static boolean followLinks(LinkOption... options) {
         boolean followLinks = true;
         for (LinkOption opt: options) {

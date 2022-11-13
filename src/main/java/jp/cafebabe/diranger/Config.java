@@ -23,7 +23,7 @@ public class Config {
     }
 
     public boolean isTarget(Entry entry) {
-        if(!entry.exists())
+        if(!FS.exists(entry))
             return false;
         if(skipHiddenFiles() && entry.isHidden())
             return false;

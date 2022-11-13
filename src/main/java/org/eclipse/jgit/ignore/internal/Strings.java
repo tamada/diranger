@@ -169,11 +169,8 @@ public class Strings {
 				return false;
 			}
 			char nextChar = pattern.charAt(nextIdx);
-			if (escapedByBackslash(nextChar)) {
-				return true;
-			}
-			return false;
-		}
+            return escapedByBackslash(nextChar);
+        }
 		return false;
 	}
 

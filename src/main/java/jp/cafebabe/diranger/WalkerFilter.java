@@ -22,9 +22,7 @@ public class WalkerFilter implements DirectoryStream.Filter<Path> {
         System.out.printf("%s: symlink: config: %s, file: %s%n", path, config.skipSymlinks(), isSymbolicLink(path));
         if(config.skipHiddenFiles() && provider.isHidden(path))
             return false;
-        if(config.skipSymlinks() && isSymbolicLink(path))
-            return false;
-        return true;
+        return !config.skipSymlinks() || !isSymbolicLink(path);
     }
 
     private boolean isSymbolicLink(Path path) {

@@ -50,9 +50,8 @@ public abstract class AbstractMatcher implements IMatcher {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof AbstractMatcher))
+		if (!(obj instanceof AbstractMatcher other))
 			return false;
-		AbstractMatcher other = (AbstractMatcher) obj;
 		return dirOnly == other.dirOnly && pattern.equals(other.pattern);
 	}
 }

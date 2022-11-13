@@ -28,15 +28,15 @@ public final class WildMatcher extends AbstractMatcher {
 
 	/** {@inheritDoc} */
 	@Override
-	public final boolean matches(String path, boolean assumeDirectory,
-			boolean pathMatch) {
+	public boolean matches(String path, boolean assumeDirectory,
+                           boolean pathMatch) {
 		return !dirOnly || assumeDirectory
 				|| (!pathMatch && isSubdirectory(path));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final boolean matches(String segment, int startIncl, int endExcl) {
+	public boolean matches(String segment, int startIncl, int endExcl) {
 		return true;
 	}
 

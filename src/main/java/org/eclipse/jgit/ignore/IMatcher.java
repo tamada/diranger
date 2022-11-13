@@ -23,7 +23,7 @@ public interface IMatcher {
 	/**
 	 * Matcher that does not match any pattern.
 	 */
-	public static final IMatcher NO_MATCH = new IMatcher() {
+    IMatcher NO_MATCH = new IMatcher() {
 
 		@Override
 		public boolean matches(String path, boolean assumeDirectory,
@@ -50,7 +50,7 @@ public interface IMatcher {
 	 *             if the pattern is invalid
 	 */
 	@NonNull
-	public static IMatcher createPathMatcher(@NonNull String pattern,
+    static IMatcher createPathMatcher(@NonNull String pattern,
 			boolean dirOnly) throws InvalidPatternException {
 		return PathMatcher.createPathMatcher(pattern,
 				Character.valueOf(FastIgnoreRule.PATH_SEPARATOR), dirOnly);

@@ -52,8 +52,8 @@ public class IgnoreNode {
 		 *
 		 * @since 3.6
 		 */
-		CHECK_PARENT_NEGATE_FIRST_MATCH;
-	}
+		CHECK_PARENT_NEGATE_FIRST_MATCH
+    }
 
 	/** The rules that have been parsed into this node. */
 	private final List<FastIgnoreRule> rules;

@@ -30,7 +30,7 @@ public class NameMatcher extends AbstractMatcher {
 		if (deleteBackslash) {
 			pattern = Strings.deleteBackslash(pattern);
 		}
-		beginning = pattern.length() == 0 ? false : pattern.charAt(0) == slash;
+		beginning = pattern.length() != 0 && pattern.charAt(0) == slash;
 		if (!beginning) {
 			this.subPattern = pattern;
 		} else {

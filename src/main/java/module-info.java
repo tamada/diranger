@@ -6,4 +6,5 @@ module diranger {
 
     exports jp.cafebabe.diranger;
     exports jp.cafebabe.diranger.ignorefiles;
+    exports jp.cafebabe.diranger.impl;
 }

@@ -237,10 +237,9 @@ public class FastIgnoreRule {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof FastIgnoreRule))
+		if (!(obj instanceof FastIgnoreRule other))
 			return false;
 
-		FastIgnoreRule other = (FastIgnoreRule) obj;
 		if (inverse != other.inverse)
 			return false;
 		if (dirOnly != other.dirOnly)

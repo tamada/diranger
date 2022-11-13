@@ -11,9 +11,7 @@ public class Main {
     }
 
     private void listUp(String base) {
-        var walker = new WalkerBuilder(Path.of(base)).build();
-        System.out.printf("%s%n", base);
-        walker.stream().forEach(p -> System.out.printf("    %s%n", p));
+
     }
 
     public static void main(String[] args) throws IOException {
