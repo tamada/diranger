@@ -1,13 +1,29 @@
 package jp.cafebabe.diranger;
 
-import java.io.IOException;
+import jp.cafebabe.diranger.ignorefiles.FS;
+import jp.cafebabe.diranger.impl.WalkerFilter;
+
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.BitSet;
-import java.util.Iterator;
 
+/**
+ * A class for configuration of directory traverser.
+ * The object from this class has three parameters.
+ * <dl>
+ *     <dt><code>respectIgnoreFiles</code></dt>
+ *     <dd>If this parameter is <code>true</code>, the traverser reads <code>.gitignore</code> file if it exists.</dd>
+ *     <dt><code>skipHiddenFiles</code></dt>
+ *     <dd>If this parameter is <code>true</code>, the traverser skip hidden files.</dd>
+ *     <dt><code>skipSymlinks</code></dt>
+ *     <dd>
+ *         If this parameter is <code>true</code>, the traverser skip symbolic links.
+ *         If the directory layout is recursively, the traverser throw an <code>IOException</code>.
+ *     </dd>
+ * </dl>
+ * @author Haruaki TAMADA
+ */
 public class Config {
     private static final int RESPECT_IGNORE_FILES = 1;
     private static final int SKIP_HIDDEN_FILES = 2;
@@ -15,19 +31,20 @@ public class Config {
 
     private final BitSet bits = new BitSet();
 
+    /**
+     * The instance from this constructor skips the hidden files, and symbolic links,
+     * and respects git ignore files.
+     * To set the parameter of the instance, use {@link Builder <code>Builder</code>} instance.
+     */
+    public Config() {
+        this(true, true, true);
+    }
+
     private Config(boolean respectIgnoreFiles, boolean skipSymlinks,
                   boolean skipHiddenFiles) {
         setBit(respectIgnoreFiles, RESPECT_IGNORE_FILES);
         setBit(skipSymlinks, SKIP_SYMLINKS);
         setBit(skipHiddenFiles, SKIP_HIDDEN_FILES);
-    }
-
-    public boolean isTarget(Entry entry) {
-        if(!FS.exists(entry))
-            return false;
-        if(skipHiddenFiles() && entry.isHidden())
-            return false;
-        return !skipSymlinks() || !entry.isSymlink();
     }
 
     private void setBit(boolean flag, int index) {
@@ -49,11 +66,11 @@ public class Config {
         return bits.get(SKIP_HIDDEN_FILES);
     }
 
-    public DirectoryStream.Filter<Path> buildFilter(FileSystemProvider provider) {
+    DirectoryStream.Filter<Path> buildFilter(FileSystemProvider provider) {
         return new WalkerFilter(this, provider);
     }
 
-    static final class Builder {
+    public static final class Builder {
         private boolean respect = true;
         private boolean symlink = true;
         private boolean hidden = true;

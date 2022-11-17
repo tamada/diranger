@@ -3,24 +3,30 @@ package jp.cafebabe.diranger.impl;
 import jp.cafebabe.diranger.Config;
 import jp.cafebabe.diranger.Entry;
 import jp.cafebabe.diranger.Ranger;
-import jp.cafebabe.diranger.TreeWalker;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.ExecutorService;
+import java.util.Iterator;
+import java.util.Spliterators;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class Queue implements Ranger {
-
     @Override
     public Stream<Entry> stream(Entry base, Config config) throws IOException {
-        var visitor = visit(base, config);
-        return visitor.queue.stream();
+        var spliterator = Spliterators.spliteratorUnknownSize(iterator(base, config), 0);
+        return StreamSupport.stream(spliterator, false);
+    }
+
+    @Override
+    public Iterator<Entry> iterator(Entry base, Config config) throws IOException {
+        return visit(base, config);
     }
 
     private Visitor visit(Entry base, Config config) throws IOException {
@@ -35,17 +41,30 @@ public class Queue implements Ranger {
         try {
             walker.accept(visitor);
         } catch(IOException e) {
-            e.printStackTrace();
+            LoggerFactory.getLogger(getClass())
+                            .warn("I/O error", e);
         }
     }
 
-    private static final class Visitor implements FileVisitor<Entry> {
+    private static final class Visitor implements FileVisitor<Entry>, Iterator<Entry> {
         private final TransferQueue<Entry> queue = new LinkedTransferQueue<>();
         private boolean hasNext = true;
         private Entry base;
 
+        @Override
+        public Entry next() {
+            try {
+                return queue.take();
+            } catch (InterruptedException e) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("error take method in queue", e);
+            }
+            return null;
+        }
+
+        @Override
         public boolean hasNext() {
-            return queue.size() > 0 && hasNext;
+            return queue.size() > 0 || hasNext;
         }
 
         @Override
@@ -60,7 +79,7 @@ public class Queue implements Ranger {
             try {
                 queue.put(file);
             } catch(InterruptedException e) {
-                e.printStackTrace();
+                LoggerFactory.getLogger(getClass()).warn("I/O error", e);;
             }
             return FileVisitResult.CONTINUE;
         }

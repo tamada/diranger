@@ -1,6 +1,9 @@
-package jp.cafebabe.diranger;
+package jp.cafebabe.diranger.impl;
 
+import jp.cafebabe.diranger.Config;
+import jp.cafebabe.diranger.Entry;
 import jp.cafebabe.diranger.ignorefiles.GitIgnoreVisitor;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileVisitor;
@@ -41,7 +44,8 @@ public class TreeWalker {
             try {
                 visitor.postVisitDirectory(dir, exc);
             } catch(IOException ee) {
-                ee.printStackTrace();
+                LoggerFactory.getLogger(getClass())
+                        .warn("fail postVisitDirectory", ee);
             }
         }
     }
@@ -54,7 +58,8 @@ public class TreeWalker {
                 try {
                     visitor.visitFileFailed(entry, e);
                 } catch(IOException ee) {
-                    ee.printStackTrace();
+                    LoggerFactory.getLogger(getClass())
+                            .warn("fail visitFileFailed", ee);
                 }
             }
         }

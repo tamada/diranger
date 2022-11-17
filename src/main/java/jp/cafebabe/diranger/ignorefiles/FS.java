@@ -1,4 +1,6 @@
-package jp.cafebabe.diranger;
+package jp.cafebabe.diranger.ignorefiles;
+
+import jp.cafebabe.diranger.Entry;
 
 import java.io.IOException;
 import java.nio.file.LinkOption;

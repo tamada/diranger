@@ -1,7 +1,6 @@
 package jp.cafebabe.diranger.ignorefiles;
 
 import jp.cafebabe.diranger.Entry;
-import jp.cafebabe.diranger.FS;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

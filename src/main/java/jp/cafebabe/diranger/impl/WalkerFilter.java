@@ -1,4 +1,7 @@
-package jp.cafebabe.diranger;
+package jp.cafebabe.diranger.impl;
+
+import jp.cafebabe.diranger.Config;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -18,8 +21,6 @@ public class WalkerFilter implements DirectoryStream.Filter<Path> {
 
     @Override
     public boolean accept(Path path) throws IOException {
-        System.out.printf("%s: hidden:  config: %s, file: %s%n", path, config.skipHiddenFiles(), provider.isHidden(path));
-        System.out.printf("%s: symlink: config: %s, file: %s%n", path, config.skipSymlinks(), isSymbolicLink(path));
         if(config.skipHiddenFiles() && provider.isHidden(path))
             return false;
         return !config.skipSymlinks() || !isSymbolicLink(path);
@@ -31,6 +32,7 @@ public class WalkerFilter implements DirectoryStream.Filter<Path> {
                             LinkOption.NOFOLLOW_LINKS)
                     .isSymbolicLink();
         } catch(IOException e) {
+            LoggerFactory.getLogger(getClass()).warn("fail readAttributes", e);
             return false;
         }
     }

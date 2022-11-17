@@ -5,9 +5,13 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * @author Haruaki TAMADA
+ */
 public class Entry implements Comparable<Entry> {
     private final Path path;
     private final BasicFileAttributes attributes;
@@ -25,20 +29,6 @@ public class Entry implements Comparable<Entry> {
         return attributes.isDirectory();
     }
 
-    public boolean isSymlink() {
-        if(attributes == null)
-            return false;
-        return attributes.isSymbolicLink();
-    }
-
-    public boolean isHidden() {
-        try {
-            return provider.isHidden(path());
-        } catch(IOException e) {
-            return true;
-        }
-    }
-
     public Stream<Entry> list(Config config) throws IOException {
         var ds = provider.newDirectoryStream(path(), config.buildFilter(provider));
         return StreamSupport.stream(ds.spliterator(), false)
@@ -52,6 +42,9 @@ public class Entry implements Comparable<Entry> {
             return null;
         return Entry.of(parent, provider);
     }
+    public Path relativize(Entry path) {
+        return path().relativize(path.path());
+    }
 
     public Path path() {
         return path;
@@ -63,6 +56,13 @@ public class Entry implements Comparable<Entry> {
 
     public BasicFileAttributes attributes() {
         return attributes;
+    }
+    public Entry resolve(String path) {
+        return resolve(Path.of(path));
+    }
+
+    public Entry resolve(Path sub) {
+        return Entry.of(path().resolve(sub), provider());
     }
 
     @Override
@@ -77,7 +77,7 @@ public class Entry implements Comparable<Entry> {
 
     private BasicFileAttributes findAttributes() {
         try {
-            return provider.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+            return provider.readAttributes(path, BasicFileAttributes.class);
         } catch(IOException e) {
         }
         return null;
@@ -89,18 +89,6 @@ public class Entry implements Comparable<Entry> {
         } catch(IOException e) {
             return false;
         }
-    }
-
-    public Path relativize(Entry path) {
-        return path().relativize(path.path());
-    }
-
-    public Entry resolve(String path) {
-        return resolve(Path.of(path));
-    }
-
-    public Entry resolve(Path sub) {
-        return Entry.of(path().resolve(sub), provider());
     }
 
     public static Entry of(String path) {

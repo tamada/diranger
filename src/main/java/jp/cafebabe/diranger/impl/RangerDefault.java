@@ -3,7 +3,6 @@ package jp.cafebabe.diranger.impl;
 import jp.cafebabe.diranger.Config;
 import jp.cafebabe.diranger.Entry;
 import jp.cafebabe.diranger.Ranger;
-import jp.cafebabe.diranger.TreeWalker;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

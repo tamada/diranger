@@ -1,7 +1,6 @@
 package jp.cafebabe.diranger.ignorefiles;
 
 import jp.cafebabe.diranger.Entry;
-import jp.cafebabe.diranger.FS;
 import org.eclipse.jgit.ignore.IgnoreNode;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ public class GitIgnoreFile implements IgnoreFile {
     public Boolean checkIgnore(Entry path) {
         Path relative = base.relativize(path);
         var result = node.checkIgnored(relative.toString(), path.isDirectory());
-        System.out.printf("GitIgnore#isIgnore(%s): %s%n", relative, result);
         return result;
     }
 

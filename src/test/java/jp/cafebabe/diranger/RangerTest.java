@@ -70,7 +70,7 @@ public class RangerTest {
         assertEquals(list.get(0).toString(), "src/test/resources/samples/.gitignore");
         assertEquals(list.get(1).toString(), "src/test/resources/samples/.hidden_dir1/file0_1");
         assertEquals(list.get(2).toString(), "src/test/resources/samples/.hidden_file1");
-        assertEquals(list.get(3).toString(), "src/test/resources/samples/.hidden_symlink1");
+        assertEquals(list.get(3).toString(), "src/test/resources/samples/.hidden_symlink1/file0_1");
         assertEquals(list.get(4).toString(), "src/test/resources/samples/dir3/.gitignore");
         assertEquals(list.get(5).toString(), "src/test/resources/samples/dir3/file3_1");
         assertEquals(list.get(6).toString(), "src/test/resources/samples/dir3/file3_2");

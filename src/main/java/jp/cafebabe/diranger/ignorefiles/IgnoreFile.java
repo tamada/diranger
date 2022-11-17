@@ -3,9 +3,7 @@ package jp.cafebabe.diranger.ignorefiles;
 import jp.cafebabe.diranger.Entry;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public interface IgnoreFile {
     /**
