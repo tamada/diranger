@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileVisitor;
+import java.util.function.BiConsumer;
 
 public class TreeWalker {
     private final Config config;
@@ -41,12 +42,18 @@ public class TreeWalker {
         } catch(IOException e) {
             exc = e;
         } finally {
-            try {
-                visitor.postVisitDirectory(dir, exc);
-            } catch(IOException ee) {
-                LoggerFactory.getLogger(getClass())
-                        .warn("fail postVisitDirectory", ee);
-            }
+            callFailure((entry, ee) -> visitor.postVisitDirectory(entry, ee),
+                    dir, exc, "postVisitDirectory");
+        }
+    }
+
+    private void callFailure(ThrowableBiConsumer<Entry, IOException, IOException> consumer,
+                             Entry e, IOException exc, String label) {
+        try {
+            consumer.accept(e, exc);
+        } catch(IOException ee) {
+            LoggerFactory.getLogger(getClass())
+                    .warn("fail " + label, ee);
         }
     }
 
@@ -55,12 +62,8 @@ public class TreeWalker {
             try {
                 visitor.visitFile(entry, entry.attributes());
             } catch(IOException e) {
-                try {
-                    visitor.visitFileFailed(entry, e);
-                } catch(IOException ee) {
-                    LoggerFactory.getLogger(getClass())
-                            .warn("fail visitFileFailed", ee);
-                }
+                callFailure((entry2, exc) -> visitor.visitFileFailed(entry2, exc),
+                        entry, e, "visitFileFailed");
             }
         }
         else

@@ -11,21 +11,51 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The traverser class for the directories.
+ * The main interface for traversing the target directory.
  * @author Haruaki TAMADA
  */
 public interface Ranger {
+    /**
+     * return a stream object contains all entries under the <code>base</code> directory
+     * excepting the files and directories followed by <code>config</code> object.
+     * @param base   the base directory for traversing.
+     * @param config configuration.
+     * @return a stream object of the entries under the <code>base</code> directory.
+     * @throws IOException I/O error
+     */
     Stream<Entry> stream(Entry base, Config config) throws IOException;
 
+    /**
+     * <code>return stream(Entry.of(base), config);</code>
+     * @param base the base directory for traversing.
+     * @param config configuration.
+     * @return an <code>Iterator</code> object.
+     * @throws IOException I/O error
+     * @see Entry#of
+     */
     default Stream<Entry> stream(Path base, Config config) throws IOException {
         return stream(Entry.of(base), config);
     }
 
+    /**
+     * <code>return stream(base, config).iterator();</code>
+     * @param base the base directory for traversing.
+     * @param config configuration.
+     * @return an <code>Iterator</code> object.
+     * @throws IOException I/O error
+     */
     default Iterator<Entry> iterator(Entry base, Config config) throws IOException {
         return stream(base, config)
                 .iterator();
     }
 
+    /**
+     * <code>return stream(base, config).iterator();</code>
+     * @param base the base directory for traversing.
+     * @param config configuration.
+     * @return an <code>Iterator</code> object.
+     * @throws IOException I/O error
+     */
     default Iterator<Entry> iterator(Path base, Config config) throws IOException {
         return stream(base, config)
                 .iterator();
@@ -36,7 +66,8 @@ public interface Ranger {
      * @param base the base directory for traversing.
      * @param config configuration.
      * @return an <code>Iterable</code> object.
-     * In the case of some error, error messages send to slf4j, and returns <code>Iterable</code> object with empty iterator.
+     * In the case of some error, error messages send to slf4j,
+     * and this method returns an empty <code>Iterable</code> object.
      */
     default Iterable<Entry> iterable(Path base, Config config) {
         return () -> {

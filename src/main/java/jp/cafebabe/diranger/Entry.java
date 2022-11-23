@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
+ * This class represents an entry in a directory.
+ * An object of the class shows the path of a file, or a directory.
+ * 
  * @author Haruaki TAMADA
  */
 public class Entry implements Comparable<Entry> {

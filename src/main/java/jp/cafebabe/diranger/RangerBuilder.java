@@ -20,7 +20,7 @@ public class RangerBuilder {
          * This type stores all entries to the list.
          * And then, returns <code>Stream</code> object from the list.
          */
-        Default,
+        Simple,
     }
 
     /**
@@ -28,7 +28,7 @@ public class RangerBuilder {
      * @return
      */
     public static Ranger build() {
-        return build(Type.Default);
+        return build(Type.Queue);
     }
 
     /**
@@ -39,7 +39,7 @@ public class RangerBuilder {
     public static Ranger build(Type type) {
         return switch(type) {
             case Queue -> new Queue();
-            case Default -> new RangerDefault();
+            case Simple -> new RangerDefault();
         };
     }
 }

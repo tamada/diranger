@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
- *
+ * An usage example of diranger .
  */
 public class Main {
     private void run(String[] args) throws IOException {
