@@ -13,6 +13,8 @@ public class TreeWalker {
     private final Config config;
     private final Entry base;
 
+    private boolean topDirectoryCheckDone = false;
+
     public TreeWalker(Config config, Entry base) {
         this.config = config;
         this.base = base;

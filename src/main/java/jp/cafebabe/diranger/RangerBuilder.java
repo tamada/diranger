@@ -1,7 +1,7 @@
 package jp.cafebabe.diranger;
 
 import jp.cafebabe.diranger.impl.Queue;
-import jp.cafebabe.diranger.impl.RangerDefault;
+import jp.cafebabe.diranger.impl.Simple;
 
 /**
  * A builder class for {@link Ranger <code>Ranger</code>}.
@@ -24,7 +24,7 @@ public class RangerBuilder {
     }
 
     /**
-     * <code>build(Type.Default)</code>
+     * <code>build(Type.Queue)</code>
      * @return
      */
     public static Ranger build() {
@@ -39,7 +39,7 @@ public class RangerBuilder {
     public static Ranger build(Type type) {
         return switch(type) {
             case Queue -> new Queue();
-            case Simple -> new RangerDefault();
+            case Simple -> new Simple();
         };
     }
 }

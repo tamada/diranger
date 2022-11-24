@@ -1,6 +1,6 @@
 package jp.cafebabe.diranger;
 
-import jp.cafebabe.diranger.impl.RangerDefault;
+import jp.cafebabe.diranger.impl.Simple;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RangerTest {
     @Test
     public void testDefault() throws IOException {
-        Ranger r = new RangerDefault();
+        Ranger r = new Simple();
         var list = r.list(Entry.of("src/test/resources/samples"),
                 new Config.Builder()
                         .respectIgnoreFiles(false)
@@ -26,7 +26,7 @@ public class RangerTest {
 
     @Test
     public void testGitIgnore() throws IOException {
-        Ranger r = new RangerDefault();
+        Ranger r = new Simple();
         var list = r.list(Entry.of("src/test/resources/samples"),
                 new Config.Builder()
                         .respectIgnoreFiles(true)
@@ -39,7 +39,7 @@ public class RangerTest {
 
     @Test
     public void testHiddenFiles() throws IOException {
-        Ranger r = new RangerDefault();
+        Ranger r = new Simple();
         var list = r.list(Entry.of("src/test/resources/samples"),
                 new Config.Builder()
                         .respectIgnoreFiles(false)
@@ -60,7 +60,7 @@ public class RangerTest {
 
     @Test
     public void testHiddenFileAndSymlinks() throws IOException {
-        Ranger r = new RangerDefault();
+        Ranger r = new Simple();
         var list = r.list(Entry.of("src/test/resources/samples"),
                 new Config.Builder()
                         .respectIgnoreFiles(false)

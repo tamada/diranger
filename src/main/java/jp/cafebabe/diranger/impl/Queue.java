@@ -57,7 +57,7 @@ public class Queue implements Ranger {
                 return queue.take();
             } catch (InterruptedException e) {
                 LoggerFactory.getLogger(getClass())
-                        .warn("error take method in queue", e);
+                        .warn("error on taking a entry in the queue", e);
             }
             return null;
         }

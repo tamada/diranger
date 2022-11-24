@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class RangerDefault implements Ranger {
+public class Simple implements Ranger {
     public Stream<Entry> stream(Entry base, Config config) throws IOException {
         var walker = new TreeWalker(config, base);
         var visitor = new Visitor();
