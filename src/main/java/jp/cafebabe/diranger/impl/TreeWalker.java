@@ -20,14 +20,14 @@ public class TreeWalker {
         this.base = base;
     }
 
-    private FileVisitor<Entry> wrapVisitorIfNeeded(FileVisitor<Entry> visitor) {
+    private FileVisitor<Entry> wrapVisitorForGitIgnore(FileVisitor<Entry> visitor) {
         if(!config.respectIgnoreFiles())
             return visitor;
         return new GitIgnoreVisitor(visitor);
     }
 
     public void accept(FileVisitor<Entry> visitor) throws IOException {
-        FileVisitor<Entry> newVisitor = wrapVisitorIfNeeded(visitor);
+        FileVisitor<Entry> newVisitor = wrapVisitorForGitIgnore(visitor);
         visitDirectory(base, newVisitor);
     }
 
@@ -37,6 +37,7 @@ public class TreeWalker {
     }
 
     private void visitDirectory(Entry dir, FileVisitor<Entry> visitor) {
+        System.out.printf("visitDirectory(%s)%n", dir);
         IOException exc = null;
         try{
             visitor.preVisitDirectory(dir, dir.attributes());
@@ -50,9 +51,9 @@ public class TreeWalker {
     }
 
     private void callFailure(ThrowableBiConsumer<Entry, IOException, IOException> consumer,
-                             Entry e, IOException exc, String label) {
+                             Entry entry, IOException exc, String label) {
         try {
-            consumer.accept(e, exc);
+            consumer.accept(entry, exc);
         } catch(IOException ee) {
             LoggerFactory.getLogger(getClass())
                     .warn("fail " + label, ee);

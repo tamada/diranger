@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'jacoco-report-aggregation'
+    id 'maven-publish'
 }
 
 group = 'jp.cafebabe.diranger'
@@ -34,9 +35,6 @@ dependencies {
     // This product contains the part of jgit (about gitignore)
     // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
     // implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.3.0.202209071007-r'
-
-    // https://mvnrepository.com/artifact/io.vavr/vavr
-    // implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.3'

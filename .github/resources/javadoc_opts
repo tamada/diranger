@@ -1,0 +1,6 @@
+-p build/libs
+-sourcepath src/main/java
+-author
+-charset utf-8
+-d build/docs/javadoc
+jp.cafebabe.diranger

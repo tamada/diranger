@@ -42,6 +42,7 @@ public class GitIgnoreFile implements IgnoreFile {
             try(InputStream in = ignoreFile.provider().newInputStream(ignoreFile.path())) {
                 node.parse(in);
             }
+            System.out.printf("GitIgnoreFile(%s): parent: %s%n", ignoreFile, ignoreFile.parent());
             return new GitIgnoreFile(ignoreFile.parent(), node, parent);
         }
     }

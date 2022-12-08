@@ -45,7 +45,7 @@ public class GitIgnoreVisitor implements FileVisitor<Entry> {
     public FileVisitResult postVisitDirectory(Entry dir, IOException exc) throws IOException {
         if(current != null) {
             Entry base = current.base();
-            if (base.isSame(dir.path()))
+            if (base != null && base.isSame(dir.path()))
                 current = current.parent();
         }
         if(current != null && !current.isIgnore(dir))

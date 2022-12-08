@@ -17,24 +17,16 @@ public class Main {
 
     private void listUp(Path base, Config config) {
         try {
-            // listUpImplIterator(base, config);
-            listUpImplStream(base, config);
+            listUpImpl(base, config);
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void listUpImplStream(Path base, Config config) throws IOException {
-        var ranger = RangerBuilder.build(RangerBuilder.Type.Queue);
+    private void listUpImpl(Path base, Config config) throws IOException {
+        var ranger = RangerBuilder.build(RangerBuilder.Type.Simple);
         ranger.stream(base, config)
                 .forEach(e -> System.out.printf("path: %s%n", e.path()));
-    }
-
-    private void listUpImplIterator(Path base, Config config) throws IOException {
-        var ranger = RangerBuilder.build(RangerBuilder.Type.Queue);
-        for(Entry entry: ranger.iterable(base, new Config.Builder().build())) {
-            System.out.printf("entry: %s%n", entry.path());
-        }
     }
 
     public static void main(String[] args) throws IOException {
