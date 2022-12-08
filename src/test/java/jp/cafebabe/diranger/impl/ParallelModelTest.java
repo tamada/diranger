@@ -2,17 +2,23 @@ package jp.cafebabe.diranger.impl;
 
 import jp.cafebabe.diranger.Config;
 import jp.cafebabe.diranger.Entry;
-import jp.cafebabe.diranger.Ranger;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class QueueTest {
+public class ParallelModelTest {
+    @Test
+    public void testEmptyDirectory() throws Exception {
+        var ranger = new SimpleModel();
+        var list = ranger.list(Entry.of("src/test/resources/emptydir"),
+                new Config.Builder().build());
+        assertEquals(0, list.size());
+    }
+
     @Test
     public void testBasic() throws Exception {
-        var ranger = new Queue();
-        Ranger r = new Simple();
-        var list = r.list(Entry.of("src/test/resources/samples"),
+        var ranger = new ParallelModel();
+        var list = ranger.list(Entry.of("src/test/resources/samples"),
                 new Config.Builder()
                         .respectIgnoreFiles(false)
                         .skipSymlinks(true)

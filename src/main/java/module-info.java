@@ -1,5 +1,7 @@
+/**
+ * This module provides the API for traversing the directory tree.
+ */
 module diranger {
-    requires java.desktop;
     requires org.slf4j;
 
     exports jp.cafebabe.diranger;

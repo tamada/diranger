@@ -1,10 +1,10 @@
 package jp.cafebabe.diranger;
 
-import jp.cafebabe.diranger.impl.Queue;
-import jp.cafebabe.diranger.impl.Simple;
+import jp.cafebabe.diranger.impl.ParallelModel;
+import jp.cafebabe.diranger.impl.SimpleModel;
 
 /**
- * A builder class for {@link Ranger <code>Ranger</code>}.
+ * A builder class for <code>{@link Ranger Ranger}</code>.
  * @author Haruaki TAMADA
  */
 public class RangerBuilder {
@@ -15,7 +15,7 @@ public class RangerBuilder {
          * The iterator object blocks if the entry is empty and the traversal has not been completed,
          * until entry added.
          */
-        Queue,
+        Parallel,
         /**
          * This type stores all entries to the list.
          * And then, returns <code>Stream</code> object from the list.
@@ -28,18 +28,18 @@ public class RangerBuilder {
      * @return
      */
     public static Ranger build() {
-        return build(Type.Queue);
+        return build(Type.Parallel);
     }
 
     /**
-     * returns an suitable object of {@link Ranger <code>Ranger</code>}.
+     * returns a suitable object of {@link Ranger <code>Ranger</code>}.
      * @param type
      * @return
      */
     public static Ranger build(Type type) {
         return switch(type) {
-            case Queue -> new Queue();
-            case Simple -> new Simple();
+            case Simple -> new SimpleModel();
+            case Parallel -> new ParallelModel();
         };
     }
 }

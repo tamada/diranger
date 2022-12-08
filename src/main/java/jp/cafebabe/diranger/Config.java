@@ -70,6 +70,9 @@ public class Config {
         return new WalkerFilter(this, provider);
     }
 
+    /**
+     * Builder class for <code>{@link Config Config}</code> class.
+     */
     public static final class Builder {
         private boolean respect = true;
         private boolean symlink = true;

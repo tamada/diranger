@@ -10,14 +10,16 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Spliterators;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class Queue implements Ranger {
+public class ParallelModel implements Ranger {
     @Override
     public Stream<Entry> stream(Entry base, Config config) throws IOException {
         var spliterator = Spliterators.spliteratorUnknownSize(iterator(base, config), 0);
@@ -31,40 +33,52 @@ public class Queue implements Ranger {
 
     private Visitor visit(Entry base, Config config) throws IOException {
         var visitor = new Visitor();
-        var future = Executors.newWorkStealingPool()
+        Executors.newWorkStealingPool()
                 .submit(() -> execute(config, base, visitor));
         return visitor;
     }
 
-    private void execute(Config config, Entry base, Visitor visitor) {
+    public void execute(Config config, Entry base, Visitor visitor) {
         TreeWalker walker = new TreeWalker(config, base);
         try {
             walker.accept(visitor);
         } catch(IOException e) {
             LoggerFactory.getLogger(getClass())
-                            .warn("I/O error", e);
+                    .warn("I/O error", e);
         }
     }
 
-    private static final class Visitor implements FileVisitor<Entry>, Iterator<Entry> {
-        private final TransferQueue<Entry> queue = new LinkedTransferQueue<>();
-        private boolean hasNext = true;
+    private static class Visitor implements FileVisitor<Entry>, Iterator<Entry> {
+        private TransferQueue<Entry> queue = new LinkedTransferQueue<>();
         private Entry base;
+        private CountDownLatch latch = new CountDownLatch(1);
+        private boolean hasNext = true;
+
+        @Override
+        public boolean hasNext() {
+            awaitUntilFindFirstElementOrEmptyDir();
+            return queue.size() > 0 || hasNext;
+        }
 
         @Override
         public Entry next() {
+            awaitUntilFindFirstElementOrEmptyDir();
             try {
                 return queue.take();
             } catch (InterruptedException e) {
                 LoggerFactory.getLogger(getClass())
                         .warn("error on taking a entry in the queue", e);
             }
-            return null;
+            throw new NoSuchElementException("no more entry");
         }
 
-        @Override
-        public boolean hasNext() {
-            return queue.size() > 0 || hasNext;
+        private void awaitUntilFindFirstElementOrEmptyDir() {
+            try {
+                latch.await();
+            } catch(InterruptedException e) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("error on awaiting the thread", e);
+            }
         }
 
         @Override
@@ -78,6 +92,7 @@ public class Queue implements Ranger {
         public FileVisitResult visitFile(Entry file, BasicFileAttributes attrs) throws IOException {
             try {
                 queue.put(file);
+                latch.countDown();
             } catch(InterruptedException e) {
                 LoggerFactory.getLogger(getClass()).warn("I/O error", e);;
             }
@@ -91,8 +106,10 @@ public class Queue implements Ranger {
 
         @Override
         public FileVisitResult postVisitDirectory(Entry dir, IOException exc) throws IOException {
-            if(base == dir)
+            if(base == dir) {
                 hasNext = false;
+                latch.countDown();
+            }
             return FileVisitResult.CONTINUE;
         }
     }
