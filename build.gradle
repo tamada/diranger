@@ -69,3 +69,42 @@ task copyFile(type: Copy) {
 }
 
 build.finalizedBy copyFile
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'diranger'
+                description = 'Directory traversing API for Java.'
+                url = 'https://tamada.github.io/diranger'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/tamada/diranger/blob/main/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tamada'
+                        name = 'Haruaki TAMADA'
+                        email = 'tamada@users.noreply.github.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/tamada/diranger.git'
+                    developerConnection = 'scm:git:ssh://github.com/tamada/diranger.git'
+                    url = 'https://github.com/tamada/diranger.git'
+                }
+            }
+        }
+        relocation(MavenPublication) {
+            pom {
+                // Old artifact coordinates
+                groupId = "jp.cafebabe"
+                artifactId = "diranger"
+                version = "1.0.0-beta-2"
+            }
+        }
+    }
+}
+

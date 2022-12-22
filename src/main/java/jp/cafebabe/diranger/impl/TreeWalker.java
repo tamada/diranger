@@ -37,7 +37,6 @@ public class TreeWalker {
     }
 
     private void visitDirectory(Entry dir, FileVisitor<Entry> visitor) {
-        System.out.printf("visitDirectory(%s)%n", dir);
         IOException exc = null;
         try{
             visitor.preVisitDirectory(dir, dir.attributes());

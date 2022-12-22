@@ -41,7 +41,7 @@ repository {
 
 dependencies {
   // ...
-  implementation group: 'jp.cafebabe', name: 'diranger', version: '1.0.0'
+  implementation group: 'jp.cafebabe', name: 'diranger', version: '1.0.0-beta-1'
   // ...
 }
 ```
@@ -63,7 +63,7 @@ Copy and paste the following snippet into your `pom.xml`.
     <dependency>
       <groupId>jp.cafebabe</groupId>
       <artifactId>diranger</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.0-beta-2</version>
     </dependency>
   </dependencies>
 ```
