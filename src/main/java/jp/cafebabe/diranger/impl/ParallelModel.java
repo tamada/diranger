@@ -33,12 +33,13 @@ public class ParallelModel implements Ranger {
 
     private Visitor visit(Entry base, Config config) throws IOException {
         var visitor = new Visitor();
+        var wrapper = new VisitorFactory(config).create(visitor);
         Executors.newWorkStealingPool()
-                .submit(() -> execute(config, base, visitor));
+                .submit(() -> execute(config, base, wrapper));
         return visitor;
     }
 
-    public void execute(Config config, Entry base, Visitor visitor) {
+    public void execute(Config config, Entry base, FileVisitor<Entry> visitor) {
         TreeWalker walker = new TreeWalker(config, base);
         try {
             walker.accept(visitor);
@@ -94,7 +95,7 @@ public class ParallelModel implements Ranger {
                 queue.put(file);
                 latch.countDown();
             } catch(InterruptedException e) {
-                LoggerFactory.getLogger(getClass()).warn("I/O error", e);;
+                LoggerFactory.getLogger(getClass()).warn("I/O error", e);
             }
             return FileVisitResult.CONTINUE;
         }

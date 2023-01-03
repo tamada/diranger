@@ -16,7 +16,8 @@ public class SimpleModel implements Ranger {
     public Stream<Entry> stream(Entry base, Config config) throws IOException {
         var walker = new TreeWalker(config, base);
         var visitor = new Visitor();
-        walker.accept(visitor);
+        var wrapper = new VisitorFactory(config).create(visitor);
+        walker.accept(wrapper);
         return visitor.list.stream();
     }
 
