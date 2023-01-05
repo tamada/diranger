@@ -1,6 +1,5 @@
 package jp.cafebabe.diranger;
 
-import jp.cafebabe.diranger.ignorefiles.FS;
 import jp.cafebabe.diranger.impl.WalkerFilter;
 
 import java.nio.file.DirectoryStream;

@@ -14,10 +14,9 @@ import java.util.stream.Stream;
 
 public class SimpleModel implements Ranger {
     public Stream<Entry> stream(Entry base, Config config) throws IOException {
-        var walker = new TreeWalker(config, base);
+        var walker = new TreeWalker(base, config);
         var visitor = new Visitor();
-        var wrapper = new VisitorFactory(config).create(visitor);
-        walker.accept(wrapper);
+        walker.accept(visitor);
         return visitor.list.stream();
     }
 
@@ -25,23 +24,23 @@ public class SimpleModel implements Ranger {
         private final List<Entry> list = new ArrayList<>();
 
         @Override
-        public FileVisitResult preVisitDirectory(Entry dir, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult preVisitDirectory(Entry dir, BasicFileAttributes attrs) {
             return FileVisitResult.CONTINUE;
         }
 
         @Override
-        public FileVisitResult visitFile(Entry file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Entry file, BasicFileAttributes attrs) {
             list.add(file);
             return FileVisitResult.CONTINUE;
         }
 
         @Override
-        public FileVisitResult visitFileFailed(Entry file, IOException exc) throws IOException {
+        public FileVisitResult visitFileFailed(Entry file, IOException exc) {
             return FileVisitResult.CONTINUE;
         }
 
         @Override
-        public FileVisitResult postVisitDirectory(Entry dir, IOException exc) throws IOException {
+        public FileVisitResult postVisitDirectory(Entry dir, IOException exc) {
             return FileVisitResult.CONTINUE;
         }
     }

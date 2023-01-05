@@ -1,11 +1,9 @@
 package jp.cafebabe.diranger;
 
 import java.io.IOException;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -82,8 +80,8 @@ public class Entry implements Comparable<Entry> {
         try {
             return provider.readAttributes(path, BasicFileAttributes.class);
         } catch(IOException e) {
+            return null;
         }
-        return null;
     }
 
     public boolean isSame(Path path) {

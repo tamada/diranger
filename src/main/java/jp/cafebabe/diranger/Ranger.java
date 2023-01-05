@@ -66,7 +66,7 @@ public interface Ranger {
      * @param base the base directory for traversing.
      * @param config configuration.
      * @return an <code>Iterable</code> object.
-     * In the case of some error, error messages send to slf4j,
+     * In the case of some error, error messages send to SLF4j,
      * and this method returns an empty <code>Iterable</code> object.
      */
     default Iterable<Entry> iterable(Path base, Config config) {
@@ -84,7 +84,7 @@ public interface Ranger {
     /**
      * <code>return stream(base, config).collect(Collectors.toList());</code>
      * @param base the base directory for traversing.
-     * @param config configration
+     * @param config configuration
      * @return file list under the base directory.
      * @throws IOException I/O error
      */

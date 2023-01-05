@@ -29,8 +29,7 @@ public class GitIgnoreFile implements IgnoreFile {
     @Override
     public Boolean checkIgnore(Entry path) {
         Path relative = base.relativize(path);
-        var result = node.checkIgnored(relative.toString(), path.isDirectory());
-        return result;
+        return node.checkIgnored(relative.toString(), path.isDirectory());
     }
 
     public static class Builder implements IgnoreFile.Builder {
@@ -42,7 +41,6 @@ public class GitIgnoreFile implements IgnoreFile {
             try(InputStream in = ignoreFile.provider().newInputStream(ignoreFile.path())) {
                 node.parse(in);
             }
-            System.out.printf("GitIgnoreFile(%s): parent: %s%n", ignoreFile, ignoreFile.parent());
             return new GitIgnoreFile(ignoreFile.parent(), node, parent);
         }
     }

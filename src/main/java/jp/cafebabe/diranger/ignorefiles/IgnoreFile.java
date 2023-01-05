@@ -6,11 +6,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 public interface IgnoreFile {
-    /**
-     *
-     * @param path
-     * @return
-     */
     Boolean checkIgnore(Entry path);
 
     default boolean isIgnore(Entry path) {

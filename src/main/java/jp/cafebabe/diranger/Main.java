@@ -5,13 +5,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
- * An usage example of diranger .
+ * A usage example of diranger .
  */
 public class Main {
-    private void run(String[] args) throws IOException {
+    private void run(String[] args) {
         Config config = new Config.Builder().build();
         Arrays.stream(args)
-                .map(dir -> Path.of(dir))
+                .map(Path::of)
                 .forEach(p -> listUp(p, config));
     }
 
@@ -24,7 +24,7 @@ public class Main {
     }
 
     private void listUpImpl(Path base, Config config) throws IOException {
-        var ranger = RangerBuilder.build(RangerBuilder.Type.Simple);
+        var ranger = RangerBuilder.build(RangerBuilder.Type.Parallel);
         ranger.stream(base, config)
                 .forEach(e -> System.out.printf("path: %s%n", e.path()));
     }

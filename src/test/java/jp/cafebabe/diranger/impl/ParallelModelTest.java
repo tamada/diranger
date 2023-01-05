@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ParallelModelTest {
     @Test
     public void testEmptyDirectory() throws Exception {
-        var ranger = new SimpleModel();
+        var ranger = new ParallelModel();
         var list = ranger.list(Entry.of("src/test/resources/emptydir"),
                 new Config.Builder().build());
         assertEquals(0, list.size());
