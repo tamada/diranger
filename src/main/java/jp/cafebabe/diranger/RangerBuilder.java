@@ -8,7 +8,7 @@ import jp.cafebabe.diranger.impl.SimpleModel;
  * @author Haruaki TAMADA
  */
 public class RangerBuilder {
-    public static enum Type {
+    public enum Type {
         /**
          * This type first returns an iterator object.
          * It then traverses the directory in parallel and adds entries to the iterator object.
@@ -25,7 +25,7 @@ public class RangerBuilder {
 
     /**
      * <code>build(Type.Queue)</code>
-     * @return
+     * @return An instance of {@link Ranger Ranger}
      */
     public static Ranger build() {
         return build(Type.Parallel);
@@ -33,8 +33,8 @@ public class RangerBuilder {
 
     /**
      * returns a suitable object of {@link Ranger <code>Ranger</code>}.
-     * @param type
-     * @return
+     * @param type Simple or Parallel
+     * @return An instance of {@link Ranger Ranger}
      */
     public static Ranger build(Type type) {
         return switch(type) {

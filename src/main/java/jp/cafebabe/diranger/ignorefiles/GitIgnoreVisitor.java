@@ -16,20 +16,24 @@ public class GitIgnoreVisitor implements FileVisitor<Entry> {
         current = new IgnoreFile.Null();
     }
 
+    private boolean isIgnore(IgnoreFile file, Entry path) {
+        return file != null && file.isIgnore(path);
+    }
+
     @Override
     public FileVisitResult preVisitDirectory(Entry dir, BasicFileAttributes attrs) throws IOException {
         Entry ignoreFile = dir.resolve(".gitignore");
-        if(FS.exists(ignoreFile)) {
+        if(FS.exists(ignoreFile))
             current = new GitIgnoreFile.Builder().build(ignoreFile, current);
-        }
-        if(current == null || current.parent() == null || !current.parent().isIgnore(dir))
-            delegate.preVisitDirectory(dir, attrs);
+        if(isIgnore(current, dir) || isIgnore(current.parent(), dir))
+            return FileVisitResult.SKIP_SUBTREE;
+        delegate.preVisitDirectory(dir, attrs);
         return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFile(Entry file, BasicFileAttributes attrs) throws IOException {
-        if(current != null && !current.isIgnore(file))
+        if(!isIgnore(current, file))
             delegate.visitFile(file, attrs);
         return FileVisitResult.CONTINUE;
     }

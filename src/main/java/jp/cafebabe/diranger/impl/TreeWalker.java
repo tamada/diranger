@@ -6,16 +6,14 @@ import jp.cafebabe.diranger.ignorefiles.GitIgnoreVisitor;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
-import java.util.function.BiConsumer;
 
 public class TreeWalker {
     private final Config config;
     private final Entry base;
 
-    private boolean topDirectoryCheckDone = false;
-
-    public TreeWalker(Config config, Entry base) {
+    public TreeWalker(Entry base, Config config) {
         this.config = config;
         this.base = base;
     }
@@ -31,17 +29,11 @@ public class TreeWalker {
         visitDirectory(base, newVisitor);
     }
 
-    private void visitEntries(Entry dir, FileVisitor<Entry> visitor) throws IOException {
-        dir.list(config)
-                .forEach(e -> visitEntry(e, visitor));
-    }
-
     private void visitDirectory(Entry dir, FileVisitor<Entry> visitor) {
-        System.out.printf("visitDirectory(%s)%n", dir);
         IOException exc = null;
         try{
-            visitor.preVisitDirectory(dir, dir.attributes());
-            visitEntries(dir, visitor);
+            if(visitor.preVisitDirectory(dir, dir.attributes()) == FileVisitResult.CONTINUE)
+                visitEntries(dir, visitor);
         } catch(IOException e) {
             exc = e;
         } finally {
@@ -60,12 +52,17 @@ public class TreeWalker {
         }
     }
 
+    private void visitEntries(Entry dir, FileVisitor<Entry> visitor) throws IOException {
+        dir.list(config)
+                .forEach(entry -> visitEntry(entry, visitor));
+    }
+
     private void visitEntry(Entry entry, FileVisitor<Entry> visitor) {
         if(!entry.isDirectory()) {
             try {
                 visitor.visitFile(entry, entry.attributes());
             } catch(IOException e) {
-                callFailure((entry2, exc) -> visitor.visitFileFailed(entry2, exc),
+                callFailure(visitor::visitFileFailed,
                         entry, e, "visitFileFailed");
             }
         }

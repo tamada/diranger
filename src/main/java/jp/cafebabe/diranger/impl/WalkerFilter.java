@@ -21,9 +21,15 @@ public class WalkerFilter implements DirectoryStream.Filter<Path> {
 
     @Override
     public boolean accept(Path path) throws IOException {
-        if(config.skipHiddenFiles() && provider.isHidden(path))
-            return false;
-        return !config.skipSymlinks() || !isSymbolicLink(path);
+        return !isSkipHiddenFile(path) && !isSkipSymbolicLinks(path);
+    }
+
+    private boolean isSkipHiddenFile(Path path) throws IOException {
+        return config.skipHiddenFiles() && provider.isHidden(path);
+    }
+
+    private boolean isSkipSymbolicLinks(Path path) {
+        return config.skipSymlinks() && isSymbolicLink(path);
     }
 
     private boolean isSymbolicLink(Path path) {
